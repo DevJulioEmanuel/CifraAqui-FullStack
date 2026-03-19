@@ -28,6 +28,9 @@ O projeto nasceu como um desafio técnico pessoal com o objetivo de praticar e d
 - **Axios** para comunicação com a API
 - **React Router** para navegação
 
+### Infraestrutura
+- **Docker** + **Docker Compose** para containerização de toda a aplicação
+
 ---
 
 ## 🔧 Funcionalidades previstas
