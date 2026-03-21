@@ -1,7 +1,6 @@
 package com.julio.cifra_api.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,26 +9,23 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tb_song")
+@Table(name = "tb_cifra")
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 
-public class Song {
+public class Cifra {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String deezerId;
-
-    @NotBlank
+    @Lob
     @Column(nullable = false)
-    private String title;
+    private String content;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String artist;
+    @ManyToOne
+    @JoinColumn(name = "song_id", nullable = false)
+    private Song song;
 }

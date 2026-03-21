@@ -1,5 +1,7 @@
 package com.julio.cifra_api.controller;
 
+import com.julio.cifra_api.dto.ResponseSongDTO;
+import com.julio.cifra_api.dto.SongDTO;
 import com.julio.cifra_api.entity.Song;
 import com.julio.cifra_api.services.SongService;
 import jakarta.validation.Valid;
@@ -18,17 +20,17 @@ public class SongController {
     }
 
     @PostMapping("/songs")
-    public ResponseEntity<Song> create(@RequestBody @Valid Song song) {
+    public ResponseEntity<ResponseSongDTO> create(@RequestBody @Valid Song song) {
         return ResponseEntity.status(201).body(songService.create(song));
     }
 
     @GetMapping("/songs/{id}")
-    public ResponseEntity<Song> getSongById(@PathVariable UUID id) {
+    public ResponseEntity<ResponseSongDTO> getSongById(@PathVariable UUID id) {
         return ResponseEntity.ok(songService.getSongById(id));
     }
 
     @GetMapping("/songs")
-    public ResponseEntity<List<Song>> getAll() {
+    public ResponseEntity<List<ResponseSongDTO>> getAll() {
         return ResponseEntity.ok(songService.findAll());
     }
 }

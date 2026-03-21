@@ -1,5 +1,7 @@
 package com.julio.cifra_api.services;
 
+import com.julio.cifra_api.dto.ResponseSongDTO;
+import com.julio.cifra_api.dto.SongDTO;
 import com.julio.cifra_api.entity.Song;
 import com.julio.cifra_api.exception.ResourceNotFoundException;
 import com.julio.cifra_api.repositories.SongRepository;
@@ -18,17 +20,27 @@ public class SongService {
         this.songRepository = songRepository;
     }
 
-    public Song create(Song song) {
-        return songRepository.save(song);
+    public ResponseSongDTO create(Song song) {
+        return toDTO(songRepository.save(song));
     }
 
-    public Song getSongById(UUID uuid) {
-        return songRepository.findById(uuid)
+    public ResponseSongDTO getSongById(UUID uuid) {
+        Song song = songRepository.findById(uuid)
                 .orElseThrow(() -> new ResourceNotFoundException("Song not found"));
+        return toDTO(song);
     }
 
-    public List<Song> findAll() {
-        return songRepository.findAll();
+    public List<ResponseSongDTO> findAll() {
+        return songRepository.findAll().stream().map(this::toDTO).toList();
     }
 
+    public ResponseSongDTO toDTO(Song song) {
+        ResponseSongDTO dto = new ResponseSongDTO();
+
+        dto.setId(song.getId());
+        dto.setTitle(song.getTitle());
+        dto.setArtist(song.getArtist());
+
+        return dto;
+    }
 }
