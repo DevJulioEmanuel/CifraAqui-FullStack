@@ -7,6 +7,8 @@ import com.julio.cifra_api.services.SongService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -32,5 +34,10 @@ public class SongController {
     @GetMapping("/songs")
     public ResponseEntity<List<ResponseSongDTO>> getAll() {
         return ResponseEntity.ok(songService.findAll());
+    }
+
+    @GetMapping("/search")
+    public Mono<ResponseEntity<List<ResponseSongDTO>>> searchSong(@RequestBody String title) {
+        return songService.searchSong(title).map(ResponseEntity::ok);
     }
 }

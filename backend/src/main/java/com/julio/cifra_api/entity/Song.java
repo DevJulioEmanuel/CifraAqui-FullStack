@@ -19,8 +19,7 @@ import java.util.UUID;
 
 public class Song {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String deezerId;

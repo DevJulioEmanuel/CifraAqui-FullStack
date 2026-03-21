@@ -1,14 +1,11 @@
-package com.julio.cifra_api.dto;
+package com.julio.cifra_api.dto.DeezerServiceDTOs;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 @Setter
-public class ResponseSongDTO {
-    private Long id;
+public class DeezerSongRequestDTO {
     private String title;
     private String artist;
 }
