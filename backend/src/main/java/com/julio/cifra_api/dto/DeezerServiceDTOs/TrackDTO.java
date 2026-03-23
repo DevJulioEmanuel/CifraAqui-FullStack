@@ -9,5 +9,6 @@ import lombok.Setter;
 public class TrackDTO {
     private Long id;
     private String title;
-    private ArtistDTO artistDTO;
+    private String preview;
+    private ArtistDTO artist;
 }

@@ -44,7 +44,12 @@ public class SongService {
                             ResponseSongDTO dto = new ResponseSongDTO();
                             dto.setId(trackDTO.getId());
                             dto.setTitle(trackDTO.getTitle());
-                            dto.setArtist(trackDTO.getArtistDTO().getName());
+                            String artistName = trackDTO.getArtist() != null
+                                    ? trackDTO.getArtist().getName()
+                                    : "Desconhecido";
+                            dto.setArtist(artistName);
+                            dto.setPreview(trackDTO.getPreview());
+
                             return dto;
                         })
                         .toList()

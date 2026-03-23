@@ -18,8 +18,8 @@ import java.util.UUID;
 
 public class Cifra {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Lob
     @Column(nullable = false)

@@ -8,8 +8,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-@Setter
-@Getter
 public class DeezerService {
     private final WebClient webClient;
 
@@ -17,11 +15,11 @@ public class DeezerService {
         this.webClient = webClient;
     }
 
-    public Mono<DeezerSongResponseDTO> searchSong(String tittle) {
+    public Mono<DeezerSongResponseDTO> searchSong(String title) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search/track")
-                        .queryParam("q", tittle)
+                        .queryParam("q", title)
                         .build())
                 .retrieve()
                 .bodyToMono(DeezerSongResponseDTO.class);

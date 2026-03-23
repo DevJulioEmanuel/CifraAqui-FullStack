@@ -36,8 +36,8 @@ public class SongController {
         return ResponseEntity.ok(songService.findAll());
     }
 
-    @GetMapping("/search")
-    public Mono<ResponseEntity<List<ResponseSongDTO>>> searchSong(@RequestBody String title) {
+    @GetMapping("/search/{title}")
+    public Mono<ResponseEntity<List<ResponseSongDTO>>> searchSong(@PathVariable String title) {
         return songService.searchSong(title).map(ResponseEntity::ok);
     }
 }

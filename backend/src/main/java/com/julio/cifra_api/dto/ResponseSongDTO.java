@@ -10,5 +10,6 @@ import java.util.UUID;
 public class ResponseSongDTO {
     private Long id;
     private String title;
+    private String preview;
     private String artist;
 }
