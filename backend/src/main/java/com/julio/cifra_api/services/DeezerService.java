@@ -15,13 +15,14 @@ public class DeezerService {
         this.webClient = webClient;
     }
 
-    public Mono<DeezerSongResponseDTO> searchSong(String title) {
+    public DeezerSongResponseDTO searchSong(String title) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search/track")
                         .queryParam("q", title)
                         .build())
                 .retrieve()
-                .bodyToMono(DeezerSongResponseDTO.class);
+                .bodyToMono(DeezerSongResponseDTO.class)
+                .block();
     }
 }

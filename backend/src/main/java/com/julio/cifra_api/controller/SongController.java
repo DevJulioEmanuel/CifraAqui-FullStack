@@ -37,7 +37,7 @@ public class SongController {
     }
 
     @GetMapping("/search/{title}")
-    public Mono<ResponseEntity<List<ResponseSongDTO>>> searchSong(@PathVariable String title) {
-        return songService.searchSong(title).map(ResponseEntity::ok);
+    public ResponseEntity<List<ResponseSongDTO>> searchSong(@PathVariable String title) {
+        return ResponseEntity.ok(songService.searchSong(title));
     }
 }

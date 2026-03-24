@@ -1,5 +1,6 @@
 package com.julio.cifra_api.services;
 
+import com.julio.cifra_api.dto.DeezerServiceDTOs.DeezerSongResponseDTO;
 import com.julio.cifra_api.dto.ResponseSongDTO;
 import com.julio.cifra_api.dto.SongDTO;
 import com.julio.cifra_api.entity.Song;
@@ -37,23 +38,27 @@ public class SongService {
         return songRepository.findAll().stream().map(this::toDTO).toList();
     }
 
-    public Mono<List<ResponseSongDTO>> searchSong(String title) {
-        return deezerService.searchSong(title)
-                .map(response -> response.getData().stream()
-                        .map(trackDTO -> {
-                            ResponseSongDTO dto = new ResponseSongDTO();
-                            dto.setId(trackDTO.getId());
-                            dto.setTitle(trackDTO.getTitle());
-                            String artistName = trackDTO.getArtist() != null
-                                    ? trackDTO.getArtist().getName()
-                                    : "Desconhecido";
-                            dto.setArtist(artistName);
-                            dto.setPreview(trackDTO.getPreview());
+    public List<ResponseSongDTO> searchSong(String title) {
+        DeezerSongResponseDTO response = deezerService.searchSong(title);
 
-                            return dto;
-                        })
-                        .toList()
-                );
+        if (response==null || response.getData()==null) {
+            return List.of();
+        }
+
+        return response.getData().stream()
+                .map(trackDTO -> {
+                    ResponseSongDTO dto = new ResponseSongDTO();
+                    dto.setId(trackDTO.getId());
+                    dto.setTitle(trackDTO.getTitle());
+                    String artistName = trackDTO.getArtist() != null
+                            ? trackDTO.getArtist().getName()
+                            : "Desconhecido";
+                    dto.setArtist(artistName);
+                    dto.setPreview(trackDTO.getPreview());
+
+                    return dto;
+                })
+                .toList();
     }
 
     public ResponseSongDTO toDTO(Song song) {
