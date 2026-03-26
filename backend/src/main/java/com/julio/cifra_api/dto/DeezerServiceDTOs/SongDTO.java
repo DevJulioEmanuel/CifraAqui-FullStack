@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class TrackDTO {
+public class SongDTO {
     private Long id;
     private String title;
     private String preview;

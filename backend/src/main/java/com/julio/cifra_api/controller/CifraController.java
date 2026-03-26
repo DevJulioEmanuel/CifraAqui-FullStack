@@ -24,7 +24,7 @@ public class CifraController {
     }
 
     @GetMapping("/cifras/{id}")
-    public ResponseEntity<ResponseCifraDTO> getCifraById(@PathVariable UUID id) {
+    public ResponseEntity<ResponseCifraDTO> getCifraById(@PathVariable Long id) {
         return ResponseEntity.ok(cifraService.getCifraById(id));
     }
 

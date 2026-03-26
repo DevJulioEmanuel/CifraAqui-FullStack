@@ -1,13 +1,11 @@
 package com.julio.cifra_api.controller;
 
 import com.julio.cifra_api.dto.ResponseSongDTO;
-import com.julio.cifra_api.dto.SongDTO;
 import com.julio.cifra_api.entity.Song;
 import com.julio.cifra_api.services.SongService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +25,7 @@ public class SongController {
     }
 
     @GetMapping("/songs/{id}")
-    public ResponseEntity<ResponseSongDTO> getSongById(@PathVariable UUID id) {
+    public ResponseEntity<ResponseSongDTO> getSongById(@PathVariable Long id) {
         return ResponseEntity.ok(songService.getSongById(id));
     }
 

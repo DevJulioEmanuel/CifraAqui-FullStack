@@ -2,6 +2,7 @@ package com.julio.cifra_api.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,17 +20,17 @@ import java.util.UUID;
 
 public class Song {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    @Column(nullable = false, unique = true)
-    private String deezerId;
 
     @NotBlank
     @Column(nullable = false)
     private String title;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String artist;
+    @Column(columnDefinition = "TEXT")
+    private String preview;
+
+    @NotNull(message = "O artista é obrigatório")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "artist_id")
+    private Artist artist;
 }

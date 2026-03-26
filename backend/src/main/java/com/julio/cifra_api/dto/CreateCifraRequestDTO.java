@@ -8,6 +8,4 @@ import lombok.Setter;
 public class CreateCifraRequestDTO {
     private String content;
     private String deezerId;
-    private String title;
-    private String artist;
 }

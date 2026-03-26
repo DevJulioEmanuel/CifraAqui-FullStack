@@ -1,11 +1,16 @@
 package com.julio.cifra_api.services;
 
 import com.julio.cifra_api.dto.CreateCifraRequestDTO;
+import com.julio.cifra_api.dto.DeezerServiceDTOs.ArtistDTO;
+import com.julio.cifra_api.dto.DeezerServiceDTOs.SongDTO;
 import com.julio.cifra_api.dto.ResponseCifraDTO;
-import com.julio.cifra_api.dto.SongDTO;
+import com.julio.cifra_api.entity.Artist;
 import com.julio.cifra_api.entity.Cifra;
 import com.julio.cifra_api.entity.Song;
 import com.julio.cifra_api.exception.ResourceNotFoundException;
+import com.julio.cifra_api.mapper.ArtistMapper;
+import com.julio.cifra_api.mapper.SongMapper;
+import com.julio.cifra_api.repositories.ArtistRepository;
 import com.julio.cifra_api.repositories.CifraRepository;
 import com.julio.cifra_api.repositories.SongRepository;
 import org.springframework.stereotype.Service;
@@ -17,19 +22,36 @@ import java.util.UUID;
 public class CifraService {
     private final CifraRepository cifraRepository;
     private final SongRepository songRepository;
+    private final ArtistRepository artistRepository;
+    private  final ArtistMapper artistMapper;
 
-    public CifraService(CifraRepository cifraRepository, SongRepository songRepository) {
+    private final DeezerService deezerService;
+    private final SongMapper songMapper;
+
+    public CifraService(CifraRepository cifraRepository, SongRepository songRepository, SongRepository songRepository1, ArtistRepository artistRepository, ArtistMapper artistMapper, DeezerService deezerService, SongMapper songMapper) {
         this.cifraRepository = cifraRepository;
         this.songRepository = songRepository;
+        this.artistRepository = artistRepository;
+        this.artistMapper = artistMapper;
+        this.deezerService = deezerService;
+        this.songMapper = songMapper;
     }
 
     public ResponseCifraDTO create(CreateCifraRequestDTO requestDTO) {
-        Song song = songRepository.findByDeezerId(requestDTO.getDeezerId())
+        SongDTO songByDeezer = deezerService.getById(requestDTO.getDeezerId());
+        Artist artist = artistRepository.findById(songByDeezer.getArtist().getId())
+                .orElseGet(() -> {
+                    Artist newArtist = artistMapper.toEntity(songByDeezer.getArtist());
+                    return artistRepository.save(newArtist);
+                });
+
+        Song song = songRepository.findById(songByDeezer.getId())
                 .orElseGet(() -> {
                     Song newSong = new Song();
-                    newSong.setDeezerId(requestDTO.getDeezerId());
-                    newSong.setTitle(requestDTO.getTitle());
-                    newSong.setArtist(requestDTO.getArtist());
+                    newSong.setId(songByDeezer.getId());
+                    newSong.setTitle(songByDeezer.getTitle());
+                    newSong.setArtist(artist);
+                    newSong.setPreview(songByDeezer.getPreview());
                     return songRepository.save(newSong);
                 });
 
@@ -40,12 +62,13 @@ public class CifraService {
         return toDTO(cifraRepository.save(cifra));
     }
 
-    public ResponseCifraDTO getCifraById(UUID uuid) {
-        Cifra cifra = cifraRepository.findById(uuid)
+    public ResponseCifraDTO getCifraById(Long id) {
+        Cifra cifra = cifraRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cifra não encontrada"));
 
         return toDTO(cifra);
     }
+
 
     public List<ResponseCifraDTO> findAll() {
         return cifraRepository.findAll().stream().map(this::toDTO).toList();
@@ -57,11 +80,7 @@ public class CifraService {
         dto.setId(cifra.getId());
         dto.setContent(cifra.getContent());
 
-        SongDTO songDTO = new SongDTO();
-        songDTO.setTitle(cifra.getSong().getTitle());
-        songDTO.setArtist(cifra.getSong().getArtist());
-
-        dto.setSong(songDTO);
+        dto.setSong(songMapper.toDTO(cifra.getSong()));
 
         return dto;
     }

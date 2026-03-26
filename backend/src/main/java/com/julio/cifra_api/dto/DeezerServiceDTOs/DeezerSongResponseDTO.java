@@ -8,5 +8,5 @@ import java.util.List;
 @Setter
 @Getter
 public class DeezerSongResponseDTO {
-    private List<TrackDTO> data;
+    private List<SongDTO> data;
 }

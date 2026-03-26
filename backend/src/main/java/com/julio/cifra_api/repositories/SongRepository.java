@@ -6,7 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface SongRepository extends JpaRepository<Song, UUID> {
-
-    Optional<Song> findByDeezerId(String deezerId);
+public interface SongRepository extends JpaRepository<Song, Long> {
 }

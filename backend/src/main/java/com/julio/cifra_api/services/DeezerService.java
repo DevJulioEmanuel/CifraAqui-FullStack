@@ -1,11 +1,9 @@
 package com.julio.cifra_api.services;
 
 import com.julio.cifra_api.dto.DeezerServiceDTOs.DeezerSongResponseDTO;
-import lombok.Getter;
-import lombok.Setter;
+import com.julio.cifra_api.dto.DeezerServiceDTOs.SongDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @Service
 public class DeezerService {
@@ -24,5 +22,16 @@ public class DeezerService {
                 .retrieve()
                 .bodyToMono(DeezerSongResponseDTO.class)
                 .block();
+    }
+
+    public SongDTO getById(String deezerId) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/track/{id}")
+                        .build(deezerId))
+                .retrieve()
+                .bodyToMono(SongDTO.class)
+                .block();
+
     }
 }

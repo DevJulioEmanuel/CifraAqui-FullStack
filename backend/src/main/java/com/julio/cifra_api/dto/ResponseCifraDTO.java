@@ -1,9 +1,8 @@
 package com.julio.cifra_api.dto;
 
+import com.julio.cifra_api.dto.DeezerServiceDTOs.SongDTO;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.UUID;
 
 @Getter
 @Setter
