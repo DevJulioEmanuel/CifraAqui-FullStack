@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <footer className="bg-gray-100 flex justify-center gap-20 items-center mt-10 p-5">
+    <footer className="bg-gray-300 flex justify-center gap-20 items-center mt-20 p-10">
       <div className="flex flex-col gap-2">
         <span className="text-2xl font-bold mb-2">Cifra Aqui!</span>
         <span>Autor: Julio Emanuel</span>
