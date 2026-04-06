@@ -33,4 +33,9 @@ public class Song {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "artist_id")
     private Artist artist;
+
+    @NotNull(message = "O album é obrigatório")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "album_id")
+    private Album album;
 }

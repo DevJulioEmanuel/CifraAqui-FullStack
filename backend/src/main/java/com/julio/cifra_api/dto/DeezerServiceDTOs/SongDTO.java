@@ -10,5 +10,6 @@ public class SongDTO {
     private Long id;
     private String title;
     private String preview;
+    private AlbumDTO album;
     private ArtistDTO artist;
 }

@@ -38,4 +38,11 @@ public class SongController {
     public ResponseEntity<List<ResponseSongDTO>> searchSong(@PathVariable String title) {
         return ResponseEntity.ok(songService.searchSong(title));
     }
+
+    @GetMapping("/search/track/{id}")
+    public ResponseEntity<ResponseSongDTO> searchSongById(@PathVariable String id) {
+        return ResponseEntity.ok(songService.searchSongById(id));
+    }
+
+
 }

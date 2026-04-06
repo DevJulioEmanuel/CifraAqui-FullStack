@@ -9,4 +9,5 @@ public class ArtistDTO {
     Long id;
     String name;
     String picture;
+    String picture_xl;
 }

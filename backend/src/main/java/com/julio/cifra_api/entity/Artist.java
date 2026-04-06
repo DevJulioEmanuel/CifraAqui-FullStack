@@ -17,4 +17,7 @@ public class Artist {
 
     @Column(columnDefinition = "TEXT")
     String picture;
+
+    @Column(columnDefinition = "TEXT")
+    String picture_xl;
 }
