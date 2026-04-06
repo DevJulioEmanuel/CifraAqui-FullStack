@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Search from "./pages/Search";
+import Cifra from "./pages/Cifra";
 
 function App() {
   return (
@@ -8,6 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/music/:id" element={<Cifra />} />
       </Routes>
     </BrowserRouter>
   );

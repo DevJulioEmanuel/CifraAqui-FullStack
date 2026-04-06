@@ -43,11 +43,7 @@ function Search() {
         </div>
         <div className="w-1/2 mt-30">
           {artistImage && (
-            <img
-              src={artistImage}
-              alt="Artist"
-              className="rounded-2xl w-96 opacity-80"
-            />
+            <img src={artistImage} alt="Artist" className="rounded-2xl w-96" />
           )}
         </div>
       </div>
