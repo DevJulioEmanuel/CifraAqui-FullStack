@@ -10,11 +10,9 @@ export const useMusicSearch = () => {
     try {
       setLoading(true);
       const data = await searchMusic(query);
-      console.log(data.data);
-
       setMusics(data.data);
     } catch (err) {
-      setError("Erro ao buscar músicas. erro: ", err);
+      setError(`Erro ao buscar músicas. erro: ${err}`);
     } finally {
       setLoading(false);
     }
