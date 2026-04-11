@@ -16,6 +16,7 @@ import com.julio.cifra_api.repositories.SongRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,26 +39,12 @@ public class CifraService {
     }
 
     public ResponseCifraDTO create(CreateCifraRequestDTO requestDTO) {
-        SongDTO songByDeezer = deezerService.getById(requestDTO.getDeezerId());
-        Artist artist = artistRepository.findById(songByDeezer.getArtist().getId())
-                .orElseGet(() -> {
-                    Artist newArtist = artistMapper.toEntity(songByDeezer.getArtist());
-                    return artistRepository.save(newArtist);
-                });
+        Optional<Cifra> existing = cifraRepository.findByDeezerId(requestDTO.getDeezerId());
 
-        Song song = songRepository.findById(songByDeezer.getId())
-                .orElseGet(() -> {
-                    Song newSong = new Song();
-                    newSong.setId(songByDeezer.getId());
-                    newSong.setTitle(songByDeezer.getTitle());
-                    newSong.setArtist(artist);
-                    newSong.setPreview(songByDeezer.getPreview());
-                    return songRepository.save(newSong);
-                });
+        Cifra cifra = existing.orElseGet(Cifra::new);
 
-        Cifra cifra = new Cifra();
         cifra.setContent(requestDTO.getContent());
-        cifra.setSong(song);
+        cifra.setDeezerId(requestDTO.getDeezerId());
 
         return toDTO(cifraRepository.save(cifra));
     }
@@ -79,9 +66,6 @@ public class CifraService {
 
         dto.setId(cifra.getId());
         dto.setContent(cifra.getContent());
-
-        dto.setSong(songMapper.toDTO(cifra.getSong()));
-
         return dto;
     }
 }

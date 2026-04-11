@@ -6,17 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
 
 @Entity
 @Table(name = "tb_cifra")
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Cifra {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -25,7 +23,6 @@ public class Cifra {
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne
-    @JoinColumn(name = "song_id", nullable = false)
-    private Song song;
+    @Column(nullable = false, unique = true)
+    private String deezerId;
 }

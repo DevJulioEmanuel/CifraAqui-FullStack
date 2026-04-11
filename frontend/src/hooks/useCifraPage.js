@@ -1,27 +1,55 @@
 import { useState } from "react";
 import { searchMusicById } from "../services/searchMusicById";
+import { getCifraByDeezerId, saveCifra } from "../services/cifraService";
 
 export const useCifraPage = () => {
   const [music, setMusic] = useState(null);
+  const [cifra, setCifra] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const fetchMusicById = async (id) => {
     try {
       setLoading(true);
-      const data = await searchMusicById(id);
-      setMusic(data.data);
+
+      const [musicRes, cifraRes] = await Promise.all([
+        searchMusicById(id),
+        getCifraByDeezerId(id),
+      ]);
+
+      setMusic(musicRes.data);
+      setCifra(cifraRes);
     } catch (err) {
-      setError(`Erro ao buscar dados da música. erro: ${err}`);
+      setError(`Erro ao carregar dados: ${err}`);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSaveCifra = async (content, deezerId) => {
+    try {
+      const isUpdate = !!cifra;
+
+      const saved = await saveCifra({
+        content,
+        deezerId,
+        isUpdate,
+      });
+
+      setCifra(saved);
+      return true;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  };
+
   return {
     music,
+    cifra,
     loading,
     error,
     fetchMusicById,
+    handleSaveCifra,
   };
 };
