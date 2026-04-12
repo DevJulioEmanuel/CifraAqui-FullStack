@@ -1,11 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useCifraPage } from "../hooks/useCifraPage";
 import InputMusic from "../components/InputMusic";
 import Title from "../components/Title";
 import NavBar from "../components/NavBar";
+import Footer from "../components/Footer";
+
 import CardMusicDetails from "../components/CifraComponents/CardMusicDetails";
 
 function Cifra() {
@@ -16,7 +17,6 @@ function Cifra() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState("");
-
   useEffect(() => {
     fetchMusicById(id);
   }, [id]);
@@ -49,9 +49,11 @@ function Cifra() {
         <CardMusicDetails music={music} />
       </div>
 
-      <div className="ml-20 mt-10 flex flex-col gap-4 max-w-2xl">
+      <div className="ml-32 mt-10 flex flex-col gap-4 max-w-2xl">
         {loading && <p>Carregando...</p>}
         {error && <p>{error}</p>}
+
+        {/* CIFRA NÃO DISPONÍVEL */}
 
         {!cifra && !isEditing && (
           <button
@@ -61,6 +63,8 @@ function Cifra() {
             Criar Cifra
           </button>
         )}
+
+        {/* CIFRA DISPONIVEL */}
 
         {cifra && !isEditing && (
           <>
@@ -76,6 +80,8 @@ function Cifra() {
             </button>
           </>
         )}
+
+        {/* EDITANDO */}
 
         {isEditing && (
           <>
@@ -94,6 +100,9 @@ function Cifra() {
             </button>
           </>
         )}
+      </div>
+      <div>
+        <Footer></Footer>
       </div>
     </div>
   );

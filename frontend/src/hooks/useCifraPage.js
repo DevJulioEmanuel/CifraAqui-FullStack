@@ -28,12 +28,9 @@ export const useCifraPage = () => {
 
   const handleSaveCifra = async (content, deezerId) => {
     try {
-      const isUpdate = !!cifra;
-
       const saved = await saveCifra({
         content,
         deezerId,
-        isUpdate,
       });
 
       setCifra(saved);
