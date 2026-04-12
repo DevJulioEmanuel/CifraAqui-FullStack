@@ -1,8 +1,8 @@
 import { useSearchParams } from "react-router-dom";
 import { useMusicSearch } from "../hooks/useMusicSearch";
-import InputMusic from "../components/InputMusic";
-import Title from "../components/Title";
-import NavBar from "../components/NavBar";
+import InputMusic from "../components/Core/InputMusic";
+import Title from "../components/Core/Title";
+import NavBar from "../components/Core/NavBar";
 import { useEffect } from "react";
 import MusicCard from "../components/SearchComponents/MusicCard";
 

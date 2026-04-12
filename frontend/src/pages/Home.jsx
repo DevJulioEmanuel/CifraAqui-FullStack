@@ -1,9 +1,9 @@
-import Title from "../components/Title";
-import NavBar from "../components/NavBar";
-import InputMusic from "../components/InputMusic";
+import Title from "../components/Core/Title";
+import NavBar from "../components/Core/NavBar";
+import InputMusic from "../components/Core/InputMusic";
 import ImageLeft from "../components/ImageLeft";
 import ImageRight from "../components/ImageRight";
-import Footer from "../components/Footer";
+import Footer from "../components/Core/Footer";
 import TopArtist from "../components/TopMusicasComponent/TopArtist";
 import TopMusicas from "../components/TopMusicasComponent/TopMusicas";
 

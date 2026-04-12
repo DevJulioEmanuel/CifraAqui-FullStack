@@ -2,7 +2,6 @@ package com.julio.cifra_api.controller;
 
 import com.julio.cifra_api.dto.CreateCifraRequestDTO;
 import com.julio.cifra_api.dto.ResponseCifraDTO;
-import com.julio.cifra_api.entity.Cifra;
 import com.julio.cifra_api.services.CifraService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

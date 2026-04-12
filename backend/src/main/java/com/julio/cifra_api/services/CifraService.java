@@ -1,13 +1,9 @@
 package com.julio.cifra_api.services;
 
 import com.julio.cifra_api.dto.CreateCifraRequestDTO;
-import com.julio.cifra_api.dto.DeezerServiceDTOs.ArtistDTO;
-import com.julio.cifra_api.dto.DeezerServiceDTOs.SongDTO;
+
 import com.julio.cifra_api.dto.ResponseCifraDTO;
-import com.julio.cifra_api.entity.Artist;
-import com.julio.cifra_api.entity.Cifra;
-import com.julio.cifra_api.entity.Song;
-import com.julio.cifra_api.exception.ResourceNotFoundException;
+import com.julio.cifra_api.entity.Cifra;import com.julio.cifra_api.exception.ResourceNotFoundException;
 import com.julio.cifra_api.mapper.ArtistMapper;
 import com.julio.cifra_api.mapper.SongMapper;
 import com.julio.cifra_api.repositories.ArtistRepository;
@@ -17,25 +13,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class CifraService {
     private final CifraRepository cifraRepository;
-    private final SongRepository songRepository;
-    private final ArtistRepository artistRepository;
-    private  final ArtistMapper artistMapper;
 
-    private final DeezerService deezerService;
-    private final SongMapper songMapper;
 
     public CifraService(CifraRepository cifraRepository, SongRepository songRepository, SongRepository songRepository1, ArtistRepository artistRepository, ArtistMapper artistMapper, DeezerService deezerService, SongMapper songMapper) {
         this.cifraRepository = cifraRepository;
-        this.songRepository = songRepository;
-        this.artistRepository = artistRepository;
-        this.artistMapper = artistMapper;
-        this.deezerService = deezerService;
-        this.songMapper = songMapper;
     }
 
     public ResponseCifraDTO create(CreateCifraRequestDTO requestDTO) {
@@ -45,6 +30,7 @@ public class CifraService {
 
         cifra.setContent(requestDTO.getContent());
         cifra.setDeezerId(requestDTO.getDeezerId());
+        cifra.setVideoId(requestDTO.getVideoId());
 
         return toDTO(cifraRepository.save(cifra));
     }
@@ -73,6 +59,7 @@ public class CifraService {
 
         dto.setId(cifra.getId());
         dto.setContent(cifra.getContent());
+        dto.setVideoId(cifra.getVideoId());
         return dto;
     }
 }

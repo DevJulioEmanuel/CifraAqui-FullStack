@@ -12,10 +12,11 @@ export const getCifraByDeezerId = async (deezerId) => {
   }
 };
 
-export const saveCifra = async ({ content, deezerId }) => {
+export const saveCifra = async ({ content, deezerId, videoId }) => {
   const response = await api.post("/cifras", {
     content,
     deezerId,
+    videoId,
   });
 
   return response.data;

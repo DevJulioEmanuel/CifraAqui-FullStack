@@ -24,4 +24,7 @@ public class Cifra {
 
     @Column(nullable = false, unique = true)
     private String deezerId;
+
+    @Column
+    private String videoId;
 }

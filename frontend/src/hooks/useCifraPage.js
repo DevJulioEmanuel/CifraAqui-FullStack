@@ -26,11 +26,12 @@ export const useCifraPage = () => {
     }
   };
 
-  const handleSaveCifra = async (content, deezerId) => {
+  const handleSaveCifra = async (content, deezerId, videoId) => {
     try {
       const saved = await saveCifra({
         content,
         deezerId,
+        videoId,
       });
 
       setCifra(saved);

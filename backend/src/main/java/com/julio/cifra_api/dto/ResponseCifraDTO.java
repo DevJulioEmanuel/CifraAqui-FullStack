@@ -8,4 +8,5 @@ import lombok.Setter;
 public class ResponseCifraDTO {
     private Long id;
     private String content;
+    private String videoId;
 }
