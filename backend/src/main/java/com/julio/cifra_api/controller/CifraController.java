@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 public class CifraController {
@@ -26,6 +25,11 @@ public class CifraController {
     @GetMapping("/cifras/{id}")
     public ResponseEntity<ResponseCifraDTO> getCifraById(@PathVariable Long id) {
         return ResponseEntity.ok(cifraService.getCifraById(id));
+    }
+
+    @GetMapping("/cifras/deezer/{id}")
+    public ResponseEntity<ResponseCifraDTO> getCifraByDeezerId(@PathVariable String id) {
+        return ResponseEntity.ok(cifraService.getCifraByDeezerId(id));
     }
 
     @PostMapping("/cifras")

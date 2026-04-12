@@ -1,6 +1,5 @@
 package com.julio.cifra_api.dto;
 
-import com.julio.cifra_api.dto.DeezerServiceDTOs.SongDTO;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,5 +8,4 @@ import lombok.Setter;
 public class ResponseCifraDTO {
     private Long id;
     private String content;
-    private SongDTO song;
 }

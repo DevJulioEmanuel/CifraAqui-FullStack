@@ -56,6 +56,13 @@ public class CifraService {
         return toDTO(cifra);
     }
 
+    public ResponseCifraDTO getCifraByDeezerId(String id) {
+        Cifra cifra = cifraRepository.findByDeezerId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cifra não encontrada"));
+
+        return toDTO(cifra);
+    }
+
 
     public List<ResponseCifraDTO> findAll() {
         return cifraRepository.findAll().stream().map(this::toDTO).toList();
