@@ -2,7 +2,7 @@ function CardMusicDetails({ music }) {
   return (
     <div>
       {music && (
-        <div className="ml-32 mt-10 flex gap-8 items-center">
+        <div className="ml-24 mt-10 flex gap-10 items-center">
           <img
             className="rounded-full w-32"
             src={music.album.cover}

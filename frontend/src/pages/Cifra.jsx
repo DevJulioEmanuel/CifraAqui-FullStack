@@ -8,7 +8,8 @@ import NavBar from "../components/Core/NavBar";
 import Footer from "../components/Core/Footer";
 
 import CardMusicDetails from "../components/CifraComponents/CardMusicDetails";
-import YoutubePlayer from "../components/YoutubePlayer";
+import YoutubePlayer from "../components/CifraComponents/YoutubePlayer";
+import CifraTexto from "../components/CifraComponents/CifraTexto";
 
 function Cifra() {
   const { id } = useParams();
@@ -51,7 +52,7 @@ function Cifra() {
       <CardMusicDetails music={music} />
 
       {/* Container principal — cifra à esquerda, player à direita */}
-      <div className="max-w-5xl mx-auto flex gap-8 mt-10 items-start px-4">
+      <div className="max-w-6xl mx-auto flex gap-16 mt-10 items-start px-4">
         {/* Coluna da cifra — cresce pra ocupar o espaço disponível */}
         <div className="w-[600px] flex flex-col gap-4">
           {loading && <p>Carregando...</p>}
@@ -68,9 +69,8 @@ function Cifra() {
 
           {cifra && !isEditing && (
             <>
-              <pre className="whitespace-pre-wrap font-mono text-sm bg-gray-50 p-10 rounded-xl">
-                {cifra.content}
-              </pre>
+              <CifraTexto texto={cifra.content}></CifraTexto>
+
               <button
                 onClick={() => setIsEditing(true)}
                 className="bg-black text-white py-3 rounded-xl font-semibold hover:opacity-90 transition"
