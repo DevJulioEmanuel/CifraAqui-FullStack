@@ -1,0 +1,899 @@
+--- FILE: ./frontend/postcss.config.js ---
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+
+
+--- FILE: ./frontend/src/pages/Cifra.jsx ---
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useCifraPage } from "../hooks/useCifraPage";
+import InputMusic from "../components/Core/InputMusic";
+import Title from "../components/Core/Title";
+import NavBar from "../components/Core/NavBar";
+import Footer from "../components/Core/Footer";
+
+import CardMusicDetails from "../components/CifraComponents/CardMusicDetails";
+import YoutubePlayer from "../components/CifraComponents/YoutubePlayer";
+import CifraTexto from "../components/CifraComponents/CifraTexto";
+
+function Cifra() {
+  const { id } = useParams();
+  const { music, cifra, loading, error, fetchMusicById, handleSaveCifra } =
+    useCifraPage();
+  const [isEditing, setIsEditing] = useState(false);
+  const [content, setContent] = useState("");
+
+  useEffect(() => {
+    fetchMusicById(id);
+  }, [id]);
+  useEffect(() => {
+    if (cifra?.content) setContent(cifra.content);
+  }, [cifra]);
+
+  const [youtubeLink, setYoutubeLink] = useState("");
+
+  const extractVideoId = (url) => {
+    const match = url.match(/(?:v=|youtu\.be\/)([^&\s]+)/);
+    return match ? match[1] : null;
+  };
+
+  const handleSave = async () => {
+    if (!content.trim()) return;
+
+    const videoId = extractVideoId(youtubeLink);
+    const success = await handleSaveCifra(content, id, videoId);
+
+    if (success) setIsEditing(false);
+  };
+
+  return (
+    <div>
+      <div className="flex">
+        <Title />
+        <InputMusic />
+        <NavBar />
+      </div>
+
+      <CardMusicDetails music={music} />
+
+      {/* Container principal — cifra à esquerda, player à direita */}
+      <div className="max-w-6xl mx-auto flex gap-16 mt-10 items-start px-4">
+        {/* Coluna da cifra — cresce pra ocupar o espaço disponível */}
+        <div className="w-[600px] flex flex-col gap-4">
+          {loading && <p>Carregando...</p>}
+          {error && <p>{error}</p>}
+
+          {!cifra && !isEditing && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="bg-black text-white py-3 rounded-xl font-semibold hover:opacity-90 transition"
+            >
+              Criar Cifra
+            </button>
+          )}
+
+          {cifra && !isEditing && (
+            <>
+              <CifraTexto texto={cifra.content}></CifraTexto>
+
+              <button
+                onClick={() => setIsEditing(true)}
+                className="bg-black text-white py-3 rounded-xl font-semibold hover:opacity-90 transition"
+              >
+                Editar cifra
+              </button>
+            </>
+          )}
+
+          {isEditing && (
+            <>
+              <textarea
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder="Digite ou cole a cifra aqui..."
+                className="w-full min-h-[300px] max-h-[600px] p-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black resize-none font-mono text-sm overflow-y-auto"
+              />
+              <input
+                type="text"
+                value={youtubeLink}
+                onChange={(e) => setYoutubeLink(e.target.value)}
+                placeholder="Cole o link do YouTube aqui..."
+                className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-black"
+              />
+              <button
+                onClick={handleSave}
+                className="bg-black text-white py-3 rounded-xl font-semibold hover:opacity-90 transition"
+              >
+                Salvar cifra
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Player — largura fixa, fica grudado no topo */}
+        <div className="shrink-0 sticky top-6 self-start">
+          <YoutubePlayer videoId={cifra?.videoId} />
+        </div>
+      </div>
+
+      <Footer />
+    </div>
+  );
+}
+
+export default Cifra;
+
+
+--- FILE: ./frontend/src/pages/Home.jsx ---
+import Title from "../components/Core/Title";
+import NavBar from "../components/Core/NavBar";
+import InputMusic from "../components/Core/InputMusic";
+import ImageLeft from "../components/HomeComponents/ImageLeft";
+import ImageRight from "../components/HomeComponents/ImageRight";
+import Footer from "../components/Core/Footer";
+import TopArtist from "../components/TopMusicasComponent/TopArtist";
+import TopMusicas from "../components/TopMusicasComponent/TopMusicas";
+
+function Home() {
+  return (
+    <div>
+      <div className="flex">
+        <Title></Title>
+        <InputMusic></InputMusic>
+        <NavBar></NavBar>
+      </div>
+      <div className="flex flex-row">
+        <div className="flex flex-col ml-32">
+          <TopMusicas></TopMusicas>
+          <ImageLeft></ImageLeft>
+        </div>
+        <div className="flex flex-col ml-auto mr-32">
+          <ImageRight></ImageRight>
+          <TopArtist></TopArtist>
+        </div>
+      </div>
+      <div>
+        <Footer></Footer>
+      </div>
+    </div>
+  );
+}
+
+export default Home;
+
+
+--- FILE: ./frontend/src/pages/Search.jsx ---
+import { useSearchParams } from "react-router-dom";
+import { useMusicSearch } from "../hooks/useMusicSearch";
+import InputMusic from "../components/Core/InputMusic";
+import Title from "../components/Core/Title";
+import NavBar from "../components/Core/NavBar";
+import { useEffect } from "react";
+import MusicCard from "../components/SearchComponents/MusicCard";
+
+function Search() {
+  const [searchParams] = useSearchParams();
+
+  const query = searchParams.get("q");
+
+  const { musics, loading, error, fetchMusics } = useMusicSearch();
+
+  const firstMusic = musics[0];
+  const artistImage = firstMusic?.artist?.picture_xl;
+
+  useEffect(() => {
+    if (query) {
+      fetchMusics(query);
+    }
+  }, [query]);
+
+  return (
+    <div className="flex flex-col gap-5">
+      <div className="flex">
+        <Title></Title>
+        <InputMusic></InputMusic>
+        <NavBar></NavBar>
+      </div>
+
+      <div className="flex">
+        <div className="w-1/2">
+          <h1 className="text-2xl font-semibold ml-10">
+            Resultados para: {query}
+          </h1>
+          {loading && <p>Carregando...</p>}
+          {error && <p>{error}</p>}
+          {musics.map((music) => (
+            <MusicCard key={music.id} music={music} />
+          ))}
+        </div>
+        <div className="w-1/2 mt-30">
+          {artistImage && (
+            <img src={artistImage} alt="Artist" className="rounded-2xl w-96" />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Search;
+
+
+--- FILE: ./frontend/src/main.jsx ---
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App.jsx";
+
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+);
+
+
+--- FILE: ./frontend/src/hooks/useMusicSearch.js ---
+import { useState } from "react";
+import { searchMusic } from "../services/searchMusic";
+
+export const useMusicSearch = () => {
+  const [musics, setMusics] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchMusics = async (query) => {
+    try {
+      setLoading(true);
+      const data = await searchMusic(query);
+      setMusics(data.data);
+    } catch (err) {
+      setError(`Erro ao buscar músicas. erro: ${err}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+  return {
+    musics,
+    loading,
+    error,
+    fetchMusics,
+  };
+};
+
+
+--- FILE: ./frontend/src/hooks/useCifraPage.js ---
+import { useState } from "react";
+import { searchMusicById } from "../services/searchMusicById";
+import { getCifraByDeezerId, saveCifra } from "../services/cifraService";
+
+export const useCifraPage = () => {
+  const [music, setMusic] = useState(null);
+  const [cifra, setCifra] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchMusicById = async (id) => {
+    try {
+      setLoading(true);
+
+      const [musicRes, cifraRes] = await Promise.all([
+        searchMusicById(id),
+        getCifraByDeezerId(id),
+      ]);
+
+      setMusic(musicRes.data);
+      setCifra(cifraRes);
+    } catch (err) {
+      setError(`Erro ao carregar dados: ${err}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveCifra = async (content, deezerId, videoId) => {
+    try {
+      const saved = await saveCifra({
+        content,
+        deezerId,
+        videoId,
+      });
+
+      setCifra(saved);
+      return true;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  };
+
+  return {
+    music,
+    cifra,
+    loading,
+    error,
+    fetchMusicById,
+    handleSaveCifra,
+  };
+};
+
+
+--- FILE: ./frontend/src/App.jsx ---
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Search from "./pages/Search";
+import Cifra from "./pages/Cifra";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/music/:id" element={<Cifra />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
+
+
+--- FILE: ./frontend/src/components/HomeComponents/ImageLeft.jsx ---
+function ImageLeft() {
+  return (
+    <img
+      className="mt-20 rounded-xl shadow-md"
+      src="src/assets/imagesSides/image_left.png"
+      alt="Tim Bernardes"
+    />
+  );
+}
+
+export default ImageLeft;
+
+
+--- FILE: ./frontend/src/components/HomeComponents/ImageRight.jsx ---
+function ImageRight() {
+  return (
+    <img
+      className="rounded-xl shadow-md"
+      src="src/assets/imagesSides/image_right.png"
+      alt="Guitarrista do Zimbra"
+    />
+  );
+}
+
+export default ImageRight;
+
+
+--- FILE: ./frontend/src/components/Core/InputMusic.jsx ---
+import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+
+function InputMusic() {
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      navigate(`/search?q=${query}`);
+    }
+  };
+  return (
+    <div className="w-full max-w-md p-5">
+      <label className="relative block">
+        <Search
+          size={18}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+        ></Search>
+        <input
+          type="text"
+          placeholder="O que você quer tocar?"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className="w-full rounded-xl py-2 pr-4 pl-10 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:border-transparent"
+        />
+      </label>
+    </div>
+  );
+}
+
+export default InputMusic;
+
+
+--- FILE: ./frontend/src/components/Core/Footer.jsx ---
+function Footer() {
+  return (
+    <footer className="bg-gray-300 flex justify-center gap-20 items-center mt-20 p-10">
+      <div className="flex flex-col gap-2">
+        <span className="text-2xl font-bold mb-2">Cifra Aqui!</span>
+        <span>Autor: Julio Emanuel</span>
+        <span>julioemanuel100@gmail.com</span>
+        <span>88988416993</span>
+      </div>
+      <div className="flex flex-col gap-2">
+        <span className="text-2xl font-bold mb-2">Redes Sociais</span>
+        <span>GitHub</span>
+        <span>LinkendIn</span>
+        <span>Instagram</span>
+      </div>
+    </footer>
+  );
+}
+
+export default Footer;
+
+
+--- FILE: ./frontend/src/components/Core/Title.jsx ---
+function Title() {
+  return (
+    <div className="flex flex-col p-6 gap-3 ">
+      <h1 className="text-left font-bold text-4xl text-blue-700">
+        Cifra Aqui!
+      </h1>
+      <h3 className="text-left font-semibold text-2xl text-black">
+        aprenda, toque, evolua
+      </h3>
+    </div>
+  );
+}
+
+export default Title;
+
+
+--- FILE: ./frontend/src/components/Core/NavBar.jsx ---
+function NavBar() {
+  return (
+    <nav className="ml-10 mt-6">
+      <ul className="flex gap-10">
+        <li>Home</li>
+        <li>Top Músicas</li>
+        <li>FeedBack</li>
+        <li>Sobre nós</li>
+      </ul>
+    </nav>
+  );
+}
+
+export default NavBar;
+
+
+--- FILE: ./frontend/src/components/SearchComponents/MusicCard.jsx ---
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+function MusicCard({ music }) {
+  const navigate = useNavigate();
+  const audioRef = useRef(null);
+  const [playing, setPlaying] = useState(false);
+
+  const togglePlay = () => {
+    if (playing) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
+    setPlaying(!playing);
+  };
+
+  return (
+    <div className="flex flex-row items-center gap-4 mt-5 ml-10 mb-8">
+      <img src={music.album.cover} className="w-12 h-12 rounded-full" />
+
+      <div
+        onClick={() => navigate(`/music/${music.id}`)}
+        className="w-80 hover:bg-gray-100 p-2 cursor-pointer transition rounded-md"
+      >
+        <p className="font-semibold">{music.title}</p>
+        <p className="text-sm text-gray-500">{music.artist.name}</p>
+      </div>
+
+      <button
+        onClick={togglePlay}
+        className="bg-gray-200 text-white w-14 h-14 rounded-full"
+      >
+        {playing ? "❚❚" : "▶︎"}
+      </button>
+
+      <audio ref={audioRef} src={music.preview} />
+    </div>
+  );
+}
+
+export default MusicCard;
+
+
+--- FILE: ./frontend/src/components/CifraComponents/CardMusicDetails.jsx ---
+function CardMusicDetails({ music }) {
+  return (
+    <div>
+      {music && (
+        <div className="ml-24 mt-10 flex gap-10 items-center">
+          <img
+            className="rounded-full w-32"
+            src={music.album.cover}
+            alt="Foto do album da música"
+          />
+          <div className=" flex flex-col gap-1">
+            <h1 className="text-4xl font-bold">{music.title}</h1>
+            <p className="text-lg text-gray-500">{music.artist.name}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default CardMusicDetails;
+
+
+--- FILE: ./frontend/src/components/CifraComponents/CifraTexto.jsx ---
+import { useMemo } from "react";
+
+function CifraTexto({ texto }) {
+  const partes = useMemo(() => {
+    const regex = /\{([^}]+)\}/g;
+    const resultado = [];
+    let ultimoIndex = 0;
+    let match;
+
+    while ((match = regex.exec(texto)) !== null) {
+      const [acordeCompleto, acorde] = match;
+      if (match.index > ultimoIndex) {
+        resultado.push(texto.slice(ultimoIndex, match.index));
+      }
+
+      resultado.push(
+        <span key={`acorde-${match.index}`} className="font-bold text-blue-500">
+          {acorde}
+        </span>,
+      );
+
+      ultimoIndex = match.index + acordeCompleto.length;
+    }
+
+    if (ultimoIndex < texto.length) {
+      resultado.push(texto.slice(ultimoIndex));
+    }
+
+    return resultado;
+  }, [texto]);
+
+  return (
+    <div className="whitespace-pre-wrap font-mono text-lg p-10 rounded-xl bg-gray-100">
+      {partes}
+    </div>
+  );
+}
+
+export default CifraTexto;
+
+
+--- FILE: ./frontend/src/components/CifraComponents/YoutubePlayer.jsx ---
+import { useEffect, useRef, useState } from "react";
+
+export default function YoutubePlayer({ videoId }) {
+  const playerRef = useRef(null);
+  const containerRef = useRef(null);
+  const [isReady, setIsReady] = useState(false);
+
+  const createPlayer = () => {
+    if (!videoId) return;
+    playerRef.current = new window.YT.Player(containerRef.current, {
+      height: "270",
+      width: "480",
+      videoId: videoId,
+      playerVars: {
+        rel: 0, // não mostrar vídeos relacionados
+      },
+      events: {
+        onReady: () => {
+          setIsReady(true);
+        },
+      },
+    });
+  };
+
+  useEffect(() => {
+    // Se já carregou a API
+    if (window.YT && window.YT.Player) {
+      createPlayer();
+      return;
+    }
+
+    // Carrega script apenas uma vez
+    const tag = document.createElement("script");
+    tag.src = "https://www.youtube.com/iframe_api";
+
+    window.onYouTubeIframeAPIReady = () => {
+      createPlayer();
+    };
+
+    document.body.appendChild(tag);
+  }, []);
+
+  useEffect(() => {
+    if (!videoId) return; // <-- ignora se ainda não tem
+
+    if (playerRef.current && isReady) {
+      playerRef.current.loadVideoById(videoId);
+      return;
+    }
+
+    if (window.YT && window.YT.Player) {
+      createPlayer();
+    }
+  }, [videoId, isReady]);
+
+  return (
+    <div>
+      <div ref={containerRef} />
+      {!isReady && videoId && <p>Carregando player...</p>}
+    </div>
+  );
+}
+
+
+--- FILE: ./frontend/src/components/TopMusicasComponent/TopArtist.jsx ---
+import ArtistList from "./ArtistList";
+
+function TopArtist() {
+  const artists = [
+    {
+      id: 1,
+      artist: "Zimbra",
+      imageUrl: "src/assets/artistUrls/zimbra.png",
+    },
+    {
+      id: 2,
+      artist: "Tim Bernardes",
+      imageUrl: "src/assets/artistUrls/timbernardes.png",
+    },
+    {
+      id: 3,
+      artist: "João Gomes",
+      imageUrl: "src/assets/artistUrls/joaogomes.png",
+    },
+    {
+      id: 4,
+      artist: "Coldplay",
+      imageUrl: "src/assets/artistUrls/coldplay.png",
+    },
+  ];
+
+  return (
+    <div className="mt-10">
+      <h1 className="text-4xl font-bold">Artistas mais acessadas</h1>
+      <ArtistList artists={artists}></ArtistList>
+    </div>
+  );
+}
+
+export default TopArtist;
+
+
+--- FILE: ./frontend/src/components/TopMusicasComponent/MusicList.jsx ---
+import MusicItem from "./MusicItem";
+
+function MusicList({ musics }) {
+  return (
+    <ul className="mt-8 flex flex-col gap-6">
+      {musics.map((music) => {
+        return <MusicItem key={music.id} music={music} />;
+      })}
+    </ul>
+  );
+}
+
+export default MusicList;
+
+
+--- FILE: ./frontend/src/components/TopMusicasComponent/MusicItem.jsx ---
+function MusicItem({ music }) {
+  return (
+    <li className="flex items-center gap-3 hover:bg-gray-100 p-2 rounded-lg cursor-pointer transition">
+      <img
+        src={music.imageUrl}
+        alt="Foto do artista"
+        className="w-13 h-13 rounded-full object-cover"
+      />
+      <div className="flex flex-col">
+        <span className="font-semibold">{music.title}</span>
+        <span>{music.artist}</span>
+      </div>
+    </li>
+  );
+}
+
+export default MusicItem;
+
+
+--- FILE: ./frontend/src/components/TopMusicasComponent/TopMusicas.jsx ---
+import MusicList from "./MusicList";
+
+function TopMusicas() {
+  const musics = [
+    {
+      id: 1,
+      title: "Eu Vi Tudo",
+      artist: "Zimbra",
+      imageUrl: "src/assets/artistUrls/zimbra.png",
+    },
+    {
+      id: 2,
+      title: "A Balada de Tim Bernardes",
+      artist: "Tim Bernardes",
+      imageUrl: "src/assets/artistUrls/timbernardes.png",
+    },
+    {
+      id: 3,
+      title: "Lembrei de Nós",
+      artist: "João Gomes",
+      imageUrl: "src/assets/artistUrls/joaogomes.png",
+    },
+    {
+      id: 4,
+      title: "Yellow",
+      artist: "Coldplay",
+      imageUrl: "src/assets/artistUrls/coldplay.png",
+    },
+  ];
+
+  return (
+    <div className="mt-3">
+      <h1 className="text-4xl font-bold">Músicas mais acessadas</h1>
+      <MusicList musics={musics}></MusicList>
+    </div>
+  );
+}
+
+export default TopMusicas;
+
+
+--- FILE: ./frontend/src/components/TopMusicasComponent/ArtistList.jsx ---
+import ArtistItem from "./ArtistItem";
+
+function ArtistList({ artists }) {
+  return (
+    <ul className="mt-8 flex flex-col gap-6">
+      {artists.map((artist) => {
+        return <ArtistItem key={artist.id} artist={artist} />;
+      })}
+    </ul>
+  );
+}
+
+export default ArtistList;
+
+
+--- FILE: ./frontend/src/components/TopMusicasComponent/ArtistItem.jsx ---
+function ArtistItem({ artist }) {
+  return (
+    <li className="flex items-center gap-3 hover:bg-gray-100 p-2 rounded-lg cursor-pointer transition">
+      <img
+        src={artist.imageUrl}
+        alt="Foto do artista"
+        className="w-13 h-13 rounded-full object-cover"
+      />
+      <span className="font-semibold">{artist.artist}</span>
+    </li>
+  );
+}
+
+export default ArtistItem;
+
+
+--- FILE: ./frontend/src/services/cifraService.js ---
+import api from "./api";
+
+export const getCifraByDeezerId = async (deezerId) => {
+  try {
+    const response = await api.get(`/cifras/deezer/${deezerId}`);
+    return response.data;
+  } catch (err) {
+    if (err.response?.status === 404) {
+      return null;
+    }
+    throw err;
+  }
+};
+
+export const saveCifra = async ({ content, deezerId, videoId }) => {
+  const response = await api.post("/cifras", {
+    content,
+    deezerId,
+    videoId,
+  });
+
+  return response.data;
+};
+
+
+--- FILE: ./frontend/src/services/searchMusicById.js ---
+import api from "./api";
+
+export const searchMusicById = async (id) => {
+  const response = await api.get(`/search/track/${id}`);
+  return response;
+};
+
+
+--- FILE: ./frontend/src/services/api.js ---
+import axios from "axios";
+
+const api = axios.create({
+  baseURL: "http://localhost:8080",
+});
+
+export default api;
+
+
+--- FILE: ./frontend/src/services/searchMusic.js ---
+import api from "./api";
+
+export const searchMusic = async (name) => {
+  const response = await api.get(`/search/${name}`);
+  return response;
+};
+
+
+--- FILE: ./frontend/tailwind.config.js ---
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+
+
+--- FILE: ./frontend/vite.config.js ---
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+})
+
+
+--- FILE: ./frontend/eslint.config.js ---
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import { defineConfig, globalIgnores } from 'eslint/config'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{js,jsx}'],
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    rules: {
+      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+    },
+  },
+])
+
+
